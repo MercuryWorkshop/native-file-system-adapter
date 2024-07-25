@@ -151,9 +151,7 @@ export class FolderHandle {
   constructor (path = '', name = '') {
     this.name = name
     this.kind = 'directory'
-    console.log("constructing: "+ path);
     this._path = path
-    console.log("set: " + this._path);
   }
 
   /** @param {FolderHandle} other */
@@ -163,12 +161,7 @@ export class FolderHandle {
 
   /** @returns {AsyncGenerator<[string, FileHandle | FolderHandle]>} */
   async * entries () {
-    console.log("i am:")
-    console.log(this);
-    console.log("After corrections now I am: ")
-    console.log(this);
     const dir = this._path
-    console.log(dir);
     const items = await fs.readdir(dir).catch(err => {
       if (err.code === 'ENOENT') throw new DOMException(...GONE)
       throw err
@@ -180,8 +173,6 @@ export class FolderHandle {
       if (stat.isFile()) {
         yield [name, new FileHandle(path, name)]
       } else if (stat.isDirectory()) {
-        console.log("passing: " + path);
-        console.log([name, new FolderHandle(path, name)])
         yield [name, new FolderHandle(path, name)]
       }
     }
@@ -254,8 +245,6 @@ export class FolderHandle {
 }
 
 export default path => {
-  console.log("adapter told me: " );
-  console.log(path)
   return new FolderHandle("/")
 
 }
