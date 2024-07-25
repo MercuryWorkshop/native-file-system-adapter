@@ -2,7 +2,7 @@ import { errors } from '../util.js'
 
 import config from '../config.js'
 const join = window.Filer.path.join;
-const fs = window.Filer.fs.promises;
+const fs = window.anura.fs.promises;
 const Buffer = window.Filer.Buffer;
 
 const {
