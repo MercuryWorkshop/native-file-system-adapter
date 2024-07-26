@@ -134,7 +134,7 @@ export class FileHandle {
     })
 
     // TODO: replace once https://github.com/nodejs/node/issues/37340 is fixed
-    return new File([await Filer.fs.promises.readFile(this._path)], this.name);
+    return new File([await fs.readFile(this._path)], this.name);
   }
 
   async isSameEntry (other) {
