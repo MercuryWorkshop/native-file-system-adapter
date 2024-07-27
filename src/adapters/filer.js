@@ -42,7 +42,13 @@ export class Sink {
   }
 
   async abort() {
-    await this._fileHandle.close()
+    const filehandle = this._fileHandle
+    await new Promise((res, rej) => {
+      cbfs.close(filehandle, (err) => {
+        if (!err) res() 
+          else rej()
+      })
+    })
   }
 
   async write (chunk) {
@@ -52,7 +58,13 @@ export class Sink {
           this._position = chunk.position
         }
         if (!('data' in chunk)) {
-          await this._fileHandle.close()
+          const filehandle = this._fileHandle
+          await new Promise((res, rej) => {
+            cbfs.close(filehandle, (err) => {
+              if (!err) res() 
+                else rej()
+            })
+          })
           throw new DOMException(...SYNTAX('write requires a data argument'))
         }
         chunk = chunk.data
@@ -64,19 +76,39 @@ export class Sink {
           this._position = chunk.position
           return
         } else {
-          await this._fileHandle.close()
+          const filehandle = this._fileHandle
+          await new Promise((res, rej) => {
+            cbfs.close(filehandle, (err) => {
+              if (!err) res() 
+                else rej()
+            })
+          })
           throw new DOMException(...SYNTAX('seek requires a position argument'))
         }
       } else if (chunk.type === 'truncate') {
         if (Number.isInteger(chunk.size) && chunk.size >= 0) {
-          await this._fileHandle.truncate(chunk.size)
+          console.log("handle:")
+          console.log(this._fileHandle)
+          const filehandle = this._fileHandle
+          await new Promise((res, rej) => {
+            cbfs.ftruncate(filehandle, chunk.size, (err) => {
+              if (!err) res() 
+                else rej()
+            })
+          })
           this._size = chunk.size
           if (this._position > this._size) {
             this._position = this._size
           }
           return
         } else {
-          await this._fileHandle.close()
+          const filehandle = this._fileHandle
+          await new Promise((res, rej) => {
+            cbfs.close(filehandle, (err) => {
+              if (!err) res() 
+                else rej()
+            })
+          })
           throw new DOMException(...SYNTAX('truncate requires a size argument'))
         }
       }
@@ -112,7 +144,13 @@ export class Sink {
 
   async close () {
     // First make sure we close the handle
-    await this._fileHandle.close()
+    const filehandle = this._fileHandle
+    await new Promise((res, rej) => {
+      cbfs.close(filehandle, (err) => {
+        if (!err) res() 
+          else rej()
+      })
+    })
   }
 }
 
